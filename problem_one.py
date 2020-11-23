@@ -8,17 +8,39 @@ class DoublyLinkedList:
     def __init__(self):
         self.head = None
         self.tail = None
+        self.size = 0
 
     def append(self, value):
+        self.size += 1
         node = DoubleNode(value)
+        if self.size > 5:
+            self.remove(self.tail.value)
         if self.head is None:
             self.head = node
             self.tail = self.head
             return
-        self.tail.next = node
-        self.tail.next.previous = self.tail
-        self.tail = self.tail.next
+        temp = self.head
+        temp.prev = node
+        node.next = temp
+        self.head = node
         return
+    
+    def remove(self, value):
+        self.size -= 1
+        if value == self.tail.value:
+            to_be_deleted = self.tail
+        else:
+            node = self.head
+            while node:
+                if node.value == value:
+                    to_be_deleted = node
+                    return
+                node = node.next
+        print('deleting', str(value))
+        to_be_deleted.prev.next = None
+        self.tail = self.tail.prev
+        self.size -= 1
+        return to_be_deleted.value
     
     def __repr__(self):
         node = self.head
@@ -39,6 +61,7 @@ class LRU_Cache(object):
         # Retrieve item from provided key. Return -1 if nonexistent. 
         item = self.elements.get(key, -1)
         if item > -1:
+            self.order.remove(key)
             self.order.append(key)
         return item
 
@@ -47,8 +70,8 @@ class LRU_Cache(object):
         # If the cache is at capacity remove the oldest item. 
         if self.size >= self.capacity:
             # remove item
-            # TODO: Replace with less recently used index 
-
+            deleting = self.order.remove(self.order.tail.value)
+            del self.elements[deleting]
             # change capacity
             self.size -= 1
         if self.elements.get(key) == None:
@@ -69,12 +92,14 @@ our_cache.set(3, 3);
 our_cache.set(4, 4);
 
 our_cache.get(1)       # returns 1
+
 our_cache.get(2)       # returns 2
-our_cache.get(9)      # returns -1 because 9 is not present in the cache
+print(our_cache.get(9))      # returns -1 because 9 is not present in the cache
 
 our_cache.set(5, 5) 
 our_cache.set(6, 6)
-# print(our_cache)
+
+print('order of elements')
 our_cache.order.__repr__()
 
-print(our_cache.get(3))      # returns -1 because the cache reached its capacity and 3 was the least recently used entry
+print(our_cache.get(3))   # returns -1 because the cache reached its capacity and 3 was the least recently used entry
