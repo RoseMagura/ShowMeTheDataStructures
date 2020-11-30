@@ -48,22 +48,18 @@ class Queue():
     
     def __len__(self):
         return len(self.q)
+    
+    def empty(self):
+        return self.__len__() == 0
 
 class Tree(object):
     def __init__(self, value):
-        self.root = Node(value)
-        # nodes = nodes[:-3]
-        # current_node = self.root.get_right_child()
-        # while len(nodes) > 1:
-        #     print (nodes[-1])
-        #     print(nodes[-2])
-        #     current_node.set_right_child(nodes[-1])
-        #     current_node.set_left_child(nodes[-2])
-        #     current_node = current_node.get_right_child()
-        #     nodes = nodes[:-2]
+        # self.root = Node(value)
+        self.root = value
+
     def get_root(self):
         return self.root
-    
+        
     def insert(self, node):
         print('inserting', str(node.value))
         current_node = self.root
@@ -148,19 +144,47 @@ def create_heap(data):
         heappush(heap, value)
     return heap
 
+def create_tree(arr):
+    index = 0
+    length = len(arr)
+
+    if length <= 0 or arr[0] == -1:
+        return None
+    
+    root = Node(arr[index])
+    index += 1
+    queue = Queue()
+    queue.enq(root)
+
+    while not queue.empty() and index < length:
+        current_node = queue.deq()
+        left_child = arr[index]
+        index += 1
+
+        if left_child is not None:
+            left_node = Node(left_child)
+            current_node.left = left_node
+            queue.enq(left_node)
+        
+        right_child = arr[index]
+        index += 1
+
+        if right_child is not None:
+            right_node = Node(right_child)
+            current_node.right = right_node
+            queue.enq(right_node)
+    return root
+
 def huffman_encoding(data):
     chars = find_char_freq(data)
     key_list = list(chars.keys())
     value_list = list(chars.values())
     heap = create_heap(chars)
-    # print(chars)
+   
     node_values = []
-    parents = []
+    # parents = []
 
-    tree = Tree(sum(value_list))
-    # tree.insert(Node(10))
-    # tree.insert(Node(19))
-    # tree.insert(Node(18))
+    # tree = Tree(sum(value_list))
 
     while len(heap) > 1:
         min1 = heappop(heap)
@@ -176,42 +200,32 @@ def huffman_encoding(data):
         )
         # merge those two 
         new_value = min1 + min2
-        parent = Node(new_value)
-        parent.set_left_child(node1)
-        parent.set_right_child(node2)
+       
+        # parent = Node(new_value)
+        # parent.set_left_child(node1)
+        # parent.set_right_child(node2)
+       
         node_values.append(new_value)
-        parents.append(parent)
-
-        # tree.insert(parent)
-
+       
         # add back to heap
-        heappush(heap, new_value)
+        heappush(heap, new_value) 
 
-    current_node = tree.get_root()
-    while current_node:
-        for p in parents[::-1]:
-            if current_node is None:
-                break
-            print('current value', str(current_node.value))
-            print(current_node.value == p.value)
-            if p.value == current_node.value:
-                current_node.set_left_child(p.get_left_child())
-                current_node.set_right_child(p.get_right_child())
-            print(current_node.get_left_child())
-            current_node = current_node.get_right_child()
-            
-    # current_node = tree.get_root()
-    # while current_node:
-    #     for p in parents[::-1]:
-    #         if current_node is None:
-    #             break
-    #         print('current value', str(current_node.value))
-    #         print(current_node.value == p.value)
-    #         if p.value == current_node.value:
-    #             current_node.set_left_child(p.get_left_child())
-    #             current_node.set_right_child(p.get_right_child())
-    #         current_node = current_node.get_left_child()  
-    print(tree.__repr__())
+    root = create_tree(node_values[::-1])
+
+    left1 = root.get_left_child()
+    right1 = root.get_right_child()
+    print('left1', left1)
+    print('right1', right1)
+
+    left2 = left1.get_left_child()
+    print('left2', left2)
+    right2 = left1.get_right_child()
+    print('right2', right2)
+    print(left2.get_left_child())
+    print(left2.get_right_child())
+
+    print(right1.get_left_child())
+    print(right1.get_right_child())
     return
 
 def huffman_decoding(data,tree):
