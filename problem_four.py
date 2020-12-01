@@ -52,8 +52,9 @@ sub_child.add_user(sub_child_user)
 child.add_group(sub_child)
 parent.add_group(child)
 
-print(is_user_in_group('sub_child_user', parent))
-print(is_user_in_group('sub_child_user', child))
-print(is_user_in_group('sub_child_user', sub_child))
-print(is_user_in_group('sub_child_usr', parent))
+print(is_user_in_group('sub_child_user', parent)) # True
+print(is_user_in_group('sub_child_user', child)) # True
+print(is_user_in_group('sub_child_user', sub_child)) # True
+print(is_user_in_group('sub_child_usr', parent)) # False
+print(is_user_in_group('sub_child_user', Group('random_group'))) # False
 
