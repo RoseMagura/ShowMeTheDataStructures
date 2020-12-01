@@ -51,89 +51,7 @@ class Queue():
     
     def empty(self):
         return self.__len__() == 0
-
-class Tree(object):
-    def __init__(self, value):
-        # self.root = Node(value)
-        self.root = value
-
-    def get_root(self):
-        return self.root
         
-    def insert(self, node):
-        print('inserting', str(node.value))
-        current_node = self.root
-        while current_node:
-            print(current_node.value)
-            if node.value == current_node.value:
-                print('equal')
-                return
-            elif node.value > current_node.value:
-                print('greater')
-                if current_node.has_right_child():
-                    current_node = current_node.get_right_child()
-                else:
-                    current_node.set_right_child(node)
-                    return
-            elif node.value < current_node.value:
-                print('less')
-                if current_node.has_left_child():
-                    if node.value > current_node.get_left_child().value:
-                        print('greater than left child')
-                        temp = current_node.get_left_child()
-                        current_node.set_left_child(node)
-                        node.set_left_child(temp)
-                        return
-                        if current_node.has_right_child():
-                            current_node = current_node.get_right_child()
-                        else:
-                            current_node.set_right_child(node)
-                            return
-                    
-                    current_node = current_node.get_left_child()
-                else:
-                    current_node.set_left_child(node)
-                    return
-            else:
-                return None
-        
-        else:
-            return None
-
-
-    def __repr__(self):
-        level = 0
-        q = Queue()
-        visit_order = list()
-        node = self.get_root()
-        q.enq( (node,level) )
-        while(len(q) > 0):
-            node, level = q.deq()
-            if node == None:
-                visit_order.append( ("<empty>", level))
-                continue
-            visit_order.append( (node, level) )
-            if node.has_left_child():
-                q.enq( (node.get_left_child(), level +1 ))
-            else:
-                q.enq( (None, level +1) )
-
-            if node.has_right_child():
-                q.enq( (node.get_right_child(), level +1 ))
-            else:
-                q.enq( (None, level +1) )
-
-        s = "\nTree\n"
-        previous_level = -1
-        for i in range(len(visit_order)):
-            node, level = visit_order[i]
-            if level == previous_level:
-                s += " | " + str(node) 
-            else:
-                s += "\n" + str(node)
-                previous_level = level          
-        return s
-
 def find_char_freq(string):
     return collections.Counter(string)
 
@@ -151,81 +69,113 @@ def create_tree(arr):
     if length <= 0 or arr[0] == -1:
         return None
     
-    root = Node(arr[index])
+    root = arr[index]
     index += 1
     queue = Queue()
     queue.enq(root)
 
     while not queue.empty() and index < length:
         current_node = queue.deq()
-        left_child = arr[index]
-        index += 1
+        if current_node.char is not None:
+            print(str(current_node), 'not getting children')
+            index += 1
+        else:
+            right_child = arr[index]
+            print(str(current_node), 'is getting right child of', str(right_child))
+            index += 1
 
-        if left_child is not None:
-            left_node = Node(left_child)
-            current_node.left = left_node
-            queue.enq(left_node)
-        
-        right_child = arr[index]
-        index += 1
+            if right_child is not None:
+                current_node.right = right_child
+                queue.enq(right_child)
+            left_child = arr[index]
+            index += 1
 
-        if right_child is not None:
-            right_node = Node(right_child)
-            current_node.right = right_node
-            queue.enq(right_node)
+            if left_child is not None:
+                print(str(current_node), 'is getting left child of', str(left_child))
+
+                current_node.left = left_child
+                queue.enq(left_child)
     return root
+
+def get_key(val, d):
+        for key, value in d.items():
+            if val == value:
+                return key
+
+def print_tree(root):
+    level = 0
+    q = Queue()
+    visit_order = list()
+    node = root
+    q.enq( (node,level) )
+    while(len(q) > 0):
+        node, level = q.deq()
+        if node == None:
+            visit_order.append( ("<empty>", level))
+            continue
+        visit_order.append( (node, level) )
+        if node.has_left_child():
+            q.enq( (node.get_left_child(), level +1 ))
+        else:
+            q.enq( (None, level +1) )
+
+        if node.has_right_child():
+            q.enq( (node.get_right_child(), level +1 ))
+        else:
+            q.enq( (None, level +1) )
+
+    s = "\nTree\n"
+    previous_level = -1
+    for i in range(len(visit_order)):
+        node, level = visit_order[i]
+        if level == previous_level:
+            s += " | " + str(node)
+        else:
+            s += "\n" + str(node)
+            previous_level = level          
+    return s
 
 def huffman_encoding(data):
     chars = find_char_freq(data)
+    heap = create_heap(chars)
+    leaves = []
+    prev = None
     key_list = list(chars.keys())
     value_list = list(chars.values())
-    heap = create_heap(chars)
-   
+    value_list = sorted(value_list, reverse=True)
     node_values = []
-    # parents = []
-
-    # tree = Tree(sum(value_list))
 
     while len(heap) > 1:
         min1 = heappop(heap)
 
-        node1 = Node(min1
-        # , chars.get(value_list.index(min1),)
-        )
-        # print(key_list[value_list.index(min1)])
+        node1 = Node(min1)
         min2 = heappop(heap)
 
-        node2 = Node(min2
-        # , chars[min2]
-        )
+        node2 = Node(min2)
         # merge those two 
         new_value = min1 + min2
        
-        # parent = Node(new_value)
-        # parent.set_left_child(node1)
-        # parent.set_right_child(node2)
+        node_values.append(Node(new_value))
        
-        node_values.append(new_value)
-       
+        for value in value_list:
+            if value == new_value:
+                c = get_key(value, chars)
+                if c is not None:
+                    node_values.append(Node(value, c))
+                    del chars[c]
         # add back to heap
         heappush(heap, new_value) 
 
-    root = create_tree(node_values[::-1])
+    node_values = node_values[::-1]
+    for k, v in chars.items():
+        node_values.append(Node(v, k))
+    root = create_tree(node_values)
+    # print(root.get_right_child().get_right_child().get_left_child())
 
-    left1 = root.get_left_child()
-    right1 = root.get_right_child()
-    print('left1', left1)
-    print('right1', right1)
+    # print(root.get_right_child().get_right_child().get_left_child().get_left_child())
+    # print(root.get_right_child().get_right_child().get_left_child().get_right_child())
 
-    left2 = left1.get_left_child()
-    print('left2', left2)
-    right2 = left1.get_right_child()
-    print('right2', right2)
-    print(left2.get_left_child())
-    print(left2.get_right_child())
-
-    print(right1.get_left_child())
-    print(right1.get_right_child())
+    # print(print_tree(root))
     return
 
 def huffman_decoding(data,tree):
