@@ -17,7 +17,10 @@ class LinkedList:
         cur_head = self.head
         out_string = ""
         while cur_head:
-            out_string += str(cur_head.value) + " -> "
+            if cur_head.next is not None:
+                out_string += str(cur_head.value) + " -> "
+            else:
+                out_string += str(cur_head.value)
             cur_head = cur_head.next
         return out_string
 
@@ -53,23 +56,27 @@ def union(llist_1, llist_2):
     while node:
         all.add(node.value)
         node = node.next
-    return all
+    sol_llist = LinkedList()
+    for item in all:
+        sol_llist.append(item)
+    return sol_llist
 
 def intersection(llist_1, llist_2):
-    values1 = list()
-    values2 = list()
+    # using sets for efficiency
+    values1 = set()
+    values2 = set()
     node = llist_1.head
     while node:
-        values1.append(node.value)
+        values1.add(node.value)
         node = node.next
     node = llist_2.head
     while node:
-        values2.append(node.value)
+        values2.add(node.value)
         node = node.next
-    intersection = set()
+    intersection = LinkedList()
     for value in values1:
         if value in values2:
-            intersection.add(value)
+            intersection.append(value)
     return intersection
 
 
@@ -87,7 +94,7 @@ for i in element_1:
 for i in element_2:
     linked_list_2.append(i)
 
-# print (union(linked_list_1,linked_list_2))
+print (union(linked_list_1,linked_list_2))
 print (intersection(linked_list_1,linked_list_2))
 
 # Test case 2
@@ -105,4 +112,4 @@ for i in element_2:
     linked_list_4.append(i)
 
 # print (union(linked_list_3,linked_list_4))
-print (intersection(linked_list_3,linked_list_4))
+# print (intersection(linked_list_3,linked_list_4))
