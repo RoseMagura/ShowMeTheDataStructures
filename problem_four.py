@@ -27,17 +27,16 @@ def is_user_in_group(user, group):
       user(str): user name/id
       group(class:Group): group to check user membership against
     """
-    return recursion(user, group)
+    return change_dir(user, group)
 
-def recursion(user, group):
-    print('checking for ', str(user), 'in', str(group.get_name()))
+def change_dir(user, group):
     users = group.get_users()
     if user in users:
         return True
     else:
         groups = group.get_groups()
         for g in groups:
-            bool = recursion(user, g)
+            bool = change_dir(user, g)
             if bool:
                 return bool
         return False
@@ -57,4 +56,3 @@ print(is_user_in_group('sub_child_user', child)) # True
 print(is_user_in_group('sub_child_user', sub_child)) # True
 print(is_user_in_group('sub_child_usr', parent)) # False
 print(is_user_in_group('sub_child_user', Group('random_group'))) # False
-
