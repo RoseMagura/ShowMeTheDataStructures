@@ -1,3 +1,5 @@
+from collections import Counter
+
 class Node:
     def __init__(self, value):
         self.value = value
@@ -42,12 +44,33 @@ class LinkedList:
         return size
 
 def union(llist_1, llist_2):
-    # Your Solution Here
-    pass
+    all = set()
+    node = llist_1.head
+    while node:
+        all.add(node.value)
+        node = node.next
+    node = llist_2.head
+    while node:
+        all.add(node.value)
+        node = node.next
+    return all
 
 def intersection(llist_1, llist_2):
-    # Your Solution Here
-    pass
+    values1 = list()
+    values2 = list()
+    node = llist_1.head
+    while node:
+        values1.append(node.value)
+        node = node.next
+    node = llist_2.head
+    while node:
+        values2.append(node.value)
+        node = node.next
+    intersection = set()
+    for value in values1:
+        if value in values2:
+            intersection.add(value)
+    return intersection
 
 
 # Test case 1
@@ -65,7 +88,7 @@ for i in element_2:
     linked_list_2.append(i)
 
 # print (union(linked_list_1,linked_list_2))
-# print (intersection(linked_list_1,linked_list_2))
+print (intersection(linked_list_1,linked_list_2))
 
 # Test case 2
 
@@ -82,4 +105,4 @@ for i in element_2:
     linked_list_4.append(i)
 
 # print (union(linked_list_3,linked_list_4))
-# print (intersection(linked_list_3,linked_list_4))
+print (intersection(linked_list_3,linked_list_4))
