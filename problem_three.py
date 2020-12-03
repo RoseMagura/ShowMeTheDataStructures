@@ -31,7 +31,7 @@ class Node:
         return self.right != None
 
     def __repr__(self):
-        return f"Node({self.get_value()})"
+        return f"Node({self.get_value()}{self.char})"
 
 class Queue():
     def __init__(self):
@@ -58,118 +58,79 @@ def find_char_freq(string):
 def create_heap(data):
     heap = []
     heapify(heap)
-    for value in data.values():
-        heappush(heap, value)
+    for key, value in data.items():
+        heappush(heap, (key, value))
     return heap
 
-def create_tree(arr):
-    index = 0
-    length = len(arr)
-
-    if length <= 0 or arr[0] == -1:
-        return None
+class Tree():
+    def __init__(self, node):
+        self.root = node
+        
+    def set_root(self,value):
+        self.root = Node(value)
+        
+    def get_root(self):
+        return self.root
     
-    root = arr[index]
-    index += 1
-    queue = Queue()
-    queue.enq(root)
+    def __repr__(self):
+        level = 0
+        q = Queue()
+        visit_order = list()
+        node = self.get_root()
+        q.enq( (node,level) )
+        while(len(q) > 0):
+            node, level = q.deq()
+            if node == None:
+                visit_order.append( ("<empty>", level))
+                continue
+            visit_order.append( (node, level) )
+            if node.has_left_child():
+                q.enq( (node.get_left_child(), level +1 ))
+            else:
+                q.enq( (None, level +1) )
 
-    while not queue.empty() and index < length:
-        current_node = queue.deq()
-        if current_node.char is not None:
-            print(str(current_node), 'not getting children')
-            index += 1
-        else:
-            right_child = arr[index]
-            print(str(current_node), 'is getting right child of', str(right_child))
-            index += 1
+            if node.has_right_child():
+                q.enq( (node.get_right_child(), level +1 ))
+            else:
+                q.enq( (None, level +1) )
 
-            if right_child is not None:
-                current_node.right = right_child
-                queue.enq(right_child)
-            left_child = arr[index]
-            index += 1
-
-            if left_child is not None:
-                print(str(current_node), 'is getting left child of', str(left_child))
-
-                current_node.left = left_child
-                queue.enq(left_child)
-    return root
-
-def get_key(val, d):
-        for key, value in d.items():
-            if val == value:
-                return key
-
-def print_tree(root):
-    level = 0
-    q = Queue()
-    visit_order = list()
-    node = root
-    q.enq( (node,level) )
-    while(len(q) > 0):
-        node, level = q.deq()
-        if node == None:
-            visit_order.append( ("<empty>", level))
-            continue
-        visit_order.append( (node, level) )
-        if node.has_left_child():
-            q.enq( (node.get_left_child(), level +1 ))
-        else:
-            q.enq( (None, level +1) )
-
-        if node.has_right_child():
-            q.enq( (node.get_right_child(), level +1 ))
-        else:
-            q.enq( (None, level +1) )
-
-    s = "\nTree\n"
-    previous_level = -1
-    for i in range(len(visit_order)):
-        node, level = visit_order[i]
-        if level == previous_level:
-            s += " | " + str(node)
-        else:
-            s += "\n" + str(node)
-            previous_level = level          
-    return s
+        s = "Tree\n"
+        previous_level = -1
+        for i in range(len(visit_order)):
+            node, level = visit_order[i]
+            if level == previous_level:
+                s += " | " + str(node) 
+            else:
+                s += "\n" + str(node)
+                previous_level = level        
+        return s
 
 def huffman_encoding(data):
     chars = find_char_freq(data)
-    heap = create_heap(chars)
-    leaves = []
-    prev = None
-    key_list = list(chars.keys())
-    value_list = list(chars.values())
-    value_list = sorted(value_list, reverse=True)
-    node_values = []
+    # heap = create_heap(chars)
+    priority_queue = list()
+    for key, value in chars.items():
+        priority_queue.append(Node(value, key))
+    priority_queue = sorted(priority_queue, key= lambda x: x.value)
+    print(priority_queue)
 
-    while len(heap) > 1:
-        min1 = heappop(heap)
+    while len(priority_queue) > 1:
+        # print('MERGING')
+        # print (priority_queue[0], priority_queue[1])
+        min1 = priority_queue[0]
+        min2 = priority_queue[1]
+        sum = min1.value + min2.value
+        new_node = Node(sum)
+        new_node.set_left_child(min1)
+        new_node.set_right_child(min2)
+        priority_queue.append(new_node)
+        priority_queue = priority_queue[2:]
+        priority_queue = sorted(priority_queue, key= lambda x: x.value)
+        # print(priority_queue)
 
-        node1 = Node(min1)
-        min2 = heappop(heap)
-
-        node2 = Node(min2)
-        # merge those two 
-        new_value = min1 + min2
-       
-        node_values.append(Node(new_value))
-       
-        for value in value_list:
-            if value == new_value:
-                c = get_key(value, chars)
-                if c is not None:
-                    node_values.append(Node(value, c))
-                    del chars[c]
-        # add back to heap
-        heappush(heap, new_value) 
-
-    node_values = node_values[::-1]
-    for k, v in chars.items():
-        node_values.append(Node(v, k))
-    root = create_tree(node_values)
+    tree = Tree(priority_queue[0])
+    print(tree)
+    # root = create_tree(node_values)
     # print(root.get_right_child().get_right_child().get_left_child())
 
     # print(root.get_right_child().get_right_child().get_left_child().get_left_child())
@@ -184,7 +145,7 @@ def huffman_decoding(data,tree):
 if __name__ == "__main__":
     codes = {}
 
-    a_great_sentence = "The bird is the word"
+    a_great_sentence = "AAAAAAABBBCCCCCCCDDEEEEEE"
 
     huffman_encoding(a_great_sentence)
     # print ("The size of the data is: {}\n".format(sys.getsizeof(a_great_sentence)))
