@@ -1,7 +1,6 @@
 import hashlib
 from datetime import datetime
 
-# encrypt transaction time, data, and information like the prev chain
 class Block:
     def __init__(self, timestamp, data, previous_hash):
         self.timestamp = timestamp
@@ -19,7 +18,7 @@ class Block:
     
     def __repr__(self):
         return str(self.timestamp) + ' | ' + str(self.data) \
-            + str(self.data) + ' | ' + str(self.previous_hash) + ' | ' \
+            + ' | ' + str(self.previous_hash) + ' | ' \
             + str(self.hash)
 
 class BlockChain(object):
