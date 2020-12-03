@@ -33,7 +33,8 @@ class BlockChain(object):
             self.head = Block(datetime.utcnow(), data, 0)
             self.tail = self.head
         else:        
-            self.tail.next = Block(datetime.utcnow(), data, self.tail.hash)
+            self.tail.next = Block(datetime.utcnow(), data, \
+                self.tail.hash)
             self.tail = self.tail.next
         return
             
