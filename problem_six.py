@@ -37,14 +37,6 @@ class LinkedList:
 
         node.next = Node(value)
 
-    def size(self):
-        size = 0
-        node = self.head
-        while node:
-            size += 1
-            node = node.next
-
-        return size
 
 def union(llist_1, llist_2):
     all = set()
@@ -94,7 +86,9 @@ for i in element_1:
 for i in element_2:
     linked_list_2.append(i)
 
-print (union(linked_list_1,linked_list_2))
+# Expect 32 -> 65 -> 2 -> 35 -> 3 -> 4 -> 6 -> 1 -> 9 -> 11 -> 21
+print (union(linked_list_1,linked_list_2))  
+# Expect 4 -> 6 -> 21
 print (intersection(linked_list_1,linked_list_2))
 
 # Test case 2
@@ -111,5 +105,6 @@ for i in element_1:
 for i in element_2:
     linked_list_4.append(i)
 
-# print (union(linked_list_3,linked_list_4))
-# print (intersection(linked_list_3,linked_list_4))
+# Expect 65 -> 2 -> 35 -> 3 -> 4 -> 6 -> 1 -> 7 -> 8 -> 9 -> 11 -> 21 -> 23
+print (union(linked_list_3,linked_list_4))
+print (intersection(linked_list_3,linked_list_4)) # Expect empty LL
