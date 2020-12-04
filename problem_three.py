@@ -80,35 +80,20 @@ class Tree():
     def get_root(self):
         return self.root
     
-    def traverse(self, node):
+    def traverse(self, node, combined=[]):
         if node:
-            print(node)
-            self.traverse(node.get_left_child())
-            self.traverse(node.get_right_child())
-        else:
-            return
+            combined.append(node)
+            self.traverse(node.get_left_child(), combined)
+            self.traverse(node.get_right_child(), combined)
+        return combined
     
     def find_leaves(self):
         node = self.get_root()
         leaves = list()
-        while node:
-            if node.has_left_child():
-                if node.get_left_child().is_leaf():
-                    leaves.append(node.get_left_child())
-            if node.has_right_child():
-                if node.get_right_child().is_leaf():
-                    leaves.append(node.get_right_child())
-            node = node.get_left_child()
-        
-        node = self.get_root()
-        while node:
-            if node.has_left_child():
-                if node.get_left_child().is_leaf():
-                    leaves.append(node.get_left_child())
-            if node.has_right_child():
-                if node.get_right_child().is_leaf():
-                    leaves.append(node.get_right_child())
-            node = node.get_right_child()    
+        all = self.traverse(node, [])
+        for item in all:
+            if item.is_leaf():
+                leaves.append(item)  
         return leaves
 
     def __repr__(self):
@@ -148,18 +133,19 @@ def sort_list(list):
     return sorted(list, key = lambda x: x.value)
 
 def calculate_code(cur_node, root, code=[]):
-    # print(cur_node)
     if cur_node == root:
-        # print('ARRIVED AT ROOT')
         return
     else:
-        # print('not yet')
         if cur_node.left_sibling:
             code.append(0)
         else:
             code.append(1)
         calculate_code(cur_node.parent, root, code)
-    return code[::-1]
+    code = code[::-1]
+    code = str(code).strip('[]')
+    code = code.split(', ')
+    code = ''.join(code)
+    return code
 
 def huffman_encoding(data):
     chars = find_char_freq(data)
@@ -186,16 +172,16 @@ def huffman_encoding(data):
     tree = Tree(priority_queue[0])
     node = tree.get_root()
     codes = dict()
-    # print(chars)
-    # print(calculate_code(Node(7, 'A'), tree, []))
-    for key, value in chars.items():
-        # print(value)
-        codes[key] = ''
-    # tree.traverse(node)
+ 
     leaves = tree.find_leaves()
-    for leaf in leaves:
-        print(leaf)
-        print(calculate_code(leaf, tree.get_root(), []))
+    # for leaf in leaves:
+    #     string = str(calculate_code(leaf, node, []))
+    #     codes[leaf.char] = string
+    # print(codes)
+    # final_string = ''
+    # for d in data:
+    #     final_string += codes.get(d, '')
+    # return final_string, tree
     return
 
 def huffman_decoding(data,tree):
@@ -204,7 +190,7 @@ def huffman_decoding(data,tree):
 if __name__ == "__main__":
     codes = {}
 
-    a_great_sentence = "AAAAAAABBBCCCCCCCDDEEEEEE"
+    a_great_sentence = "BCAADDDCCACACAC"
 
     huffman_encoding(a_great_sentence)
     # print ("The size of the data is: {}\n".format(sys.getsizeof(a_great_sentence)))
