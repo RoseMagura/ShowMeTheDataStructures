@@ -2,12 +2,13 @@ import sys, collections
 from heapq import heapify, heappush, heappop
 
 class Node:
-    def __init__(self, value, char = None, parent = None):
+    def __init__(self, value, char = None, parent = None, left_sibling = None):
         self.char = char
         self.value = value
         self.left = None
         self.right = None
         self.parent = None
+        self.left_sibling = None
 # add set_value and get_value functions
     def get_value(self):
         return self.value
@@ -146,58 +147,19 @@ class Tree():
 def sort_list(list):
     return sorted(list, key = lambda x: x.value)
 
-# def calculate_code(target, tree, code_list):
-#     cur_node = tree.get_root()
-#     if(cur_node.value < target.value):
-#     #     print(cur_node)
-#     #     calculate_code(target, )
-#         return
-#     if target.value == cur_node.get_left_child().value:
-#         if target.char == cur_node.get_left_child().char:
-#             code_list.append(0)
-#             return code_list
-#     if target.value == cur_node.get_right_child().value:
-#         if target.char == cur_node.get_right_child().char:
-#             code_list.append(1)
-#             return code_list
-#     elif target.value < cur_node.value:
-#         # append 0 to code list
-#         code_list.append(0)
-#         print('going left')
-#         recursion(target, cur_node.get_left_child(), code_list)
-#     else:
-#         # append 1 to code list
-#         code_list.append(1)
-#         print('going right')
-#         recursion(target, cur_node.get_right_child(), code_list)
-#     return code_list
-
-# def recursion(target, cur_node, code_list):
-#     print(cur_node)
-#     if(cur_node.value < target.value):
-#         print('EXITING')
-#     #     print(cur_node)
-#     #     calculate_code(target, )
-#         return 
-#     if target.value == cur_node.get_left_child().value:
-#         if target.char == cur_node.get_left_child().char:
-#             code_list.append(0)
-#             return code_list
-#     if target.value == cur_node.get_right_child().value:
-#         if target.char == cur_node.get_right_child().char:
-#             code_list.append(1)
-#             return code_list
-#     elif target.value < cur_node.value:
-#         # append 0 to code list
-#         code_list.append(0)
-#         print('going left')
-#         recursion(target, cur_node.get_left_child(), code_list)
-#     else:
-#         # append 1 to code list
-#         code_list.append(1)
-#         print('going right')
-#         recursion(target, cur_node.get_right_child(), code_list)
-#     return code_list
+def calculate_code(cur_node, root, code=[]):
+    # print(cur_node)
+    if cur_node == root:
+        # print('ARRIVED AT ROOT')
+        return
+    else:
+        # print('not yet')
+        if cur_node.left_sibling:
+            code.append(0)
+        else:
+            code.append(1)
+        calculate_code(cur_node.parent, root, code)
+    return code[::-1]
 
 def huffman_encoding(data):
     chars = find_char_freq(data)
@@ -215,6 +177,8 @@ def huffman_encoding(data):
         new_node.set_left_child(min1)
         new_node.set_right_child(min2)
         min1.parent = new_node
+        min1.left_sibling = True
+        min2.left_sibling = False
         min2.parent = new_node
         priority_queue.append(new_node)
         priority_queue = priority_queue[2:]
@@ -231,8 +195,7 @@ def huffman_encoding(data):
     leaves = tree.find_leaves()
     for leaf in leaves:
         print(leaf)
-        print(leaf.parent)
-        
+        print(calculate_code(leaf, tree.get_root(), []))
     return
 
 def huffman_decoding(data,tree):
