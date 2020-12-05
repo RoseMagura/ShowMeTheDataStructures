@@ -1,5 +1,6 @@
 import os
 
+
 def find_files(suffix, path):
     """
     Find all files beneath path with file name suffix.
@@ -27,6 +28,7 @@ def find_files(suffix, path):
             enter_dir(item, suffix, matches, path)
     return matches
 
+
 def enter_dir(folder, suffix, matches, path):
     if os.path.isdir(folder):
         os.chdir(folder)
@@ -39,8 +41,9 @@ def enter_dir(folder, suffix, matches, path):
         os.chdir('../')
     return matches
 
+
 here = os.listdir('.')
-print(find_files('.c', here)) # Expect ['a.c', 'b.c', 'a.c', 't1.c']
-print(find_files('.gitkeep', here)) # Expect ['.gitkeep', '.gitkeep']
-print(find_files('.jar', here)) # Expect []
-print(find_files('.c', os.listdir('./testdir/subdir2'))) # Expect []
+print(find_files('.c', here))  # Expect ['a.c', 'b.c', 'a.c', 't1.c']
+print(find_files('.gitkeep', here))  # Expect ['.gitkeep', '.gitkeep']
+print(find_files('.jar', here))  # Expect []
+print(find_files('.c', os.listdir('./testdir/subdir2')))  # Expect []

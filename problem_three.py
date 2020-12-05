@@ -1,7 +1,9 @@
-import sys, collections
+import sys
+import collections
+
 
 class Node:
-    def __init__(self, value, char = None, parent = None, left_sibling = None):
+    def __init__(self, value, char=None, parent=None, left_sibling=None):
         self.char = char
         self.value = value
         self.left = None
@@ -9,69 +11,75 @@ class Node:
         self.parent = None
         self.left_sibling = None
 # add set_value and get_value functions
+
     def get_value(self):
         return self.value
+
     def set_value(self, value):
         self.value = value
+
     def set_left_child(self, node):
         self.left = node
 
     def set_right_child(self, node):
         self.right = node
-        
+
     def get_left_child(self):
         return self.left
-    
+
     def get_right_child(self):
         return self.right
 
     def has_left_child(self):
-        return self.left != None
-    
+        return self.left is not None
+
     def has_right_child(self):
-        return self.right != None
-    
+        return self.right is not None
+
     def is_leaf(self):
-        if self.right == None and self.left == None:
+        if self.right is None and self.left is None:
             return True
         else:
             return False
 
     def __repr__(self):
         return f"Node({self.get_value()}{self.char})"
-        
+
+
 def find_char_freq(string):
     return collections.Counter(string)
+
 
 class Tree():
     def __init__(self, node):
         self.root = node
-        
-    def set_root(self,value):
+
+    def set_root(self, value):
         self.root = Node(value)
-        
+
     def get_root(self):
         return self.root
-    
+
     def traverse(self, node, combined=[]):
         if node:
             combined.append(node)
             self.traverse(node.get_left_child(), combined)
             self.traverse(node.get_right_child(), combined)
         return combined
-    
+
     def find_leaves(self):
         node = self.get_root()
         leaves = list()
         all = self.traverse(node, [])
         for item in all:
             if item.is_leaf():
-                leaves.append(item)  
+                leaves.append(item)
         return leaves
 
 
 def sort_list(list):
-    return sorted(list, key = lambda x: x.value)
+    return sorted(list, key=lambda x: x.value)
+
 
 def calculate_code(cur_node, root, code=[]):
     if cur_node == root:
@@ -87,6 +95,7 @@ def calculate_code(cur_node, root, code=[]):
     code = code.split(', ')
     code = ''.join(code)
     return code
+
 
 def huffman_encoding(data):
     chars = find_char_freq(data)
@@ -119,11 +128,12 @@ def huffman_encoding(data):
         final_string += codes.get(d, '')
     return final_string, tree
 
+
 def huffman_decoding(data, tree):
     leaves = tree.find_leaves()
     codes = dict()
     for leaf in leaves:
-        codes[calculate_code(leaf, tree.get_root(), [])] = leaf.char 
+        codes[calculate_code(leaf, tree.get_root(), [])] = leaf.char
     cur_string = ''
     solution = ''
     for d in data:
@@ -134,21 +144,27 @@ def huffman_decoding(data, tree):
             continue
     return solution
 
+
 if __name__ == "__main__":
     codes = {}
 
     a_great_sentence = "The bird is the word"
 
     huffman_encoding(a_great_sentence)
-    print ("The size of the data is: {}\n".format(sys.getsizeof(a_great_sentence)))
-    print ("The content of the data is: {}\n".format(a_great_sentence))
+    print("The size of the data is: {}\n"
+          .format(sys.getsizeof(a_great_sentence)))
+    print("The content of the data is: {}\n".format(a_great_sentence))
 
     encoded_data, tree = huffman_encoding(a_great_sentence)
 
-    print ("The size of the encoded data is: {}\n".format(sys.getsizeof(int(encoded_data, base=2))))
-    print ("The content of the encoded data is: {}\n".format(encoded_data))
+    print("The size of the encoded data is: {}\n"
+          .format(sys.getsizeof(int(encoded_data, base=2))))
+    print("The content of the encoded data is: {}\n"
+          .format(encoded_data))
 
     decoded_data = huffman_decoding(encoded_data, tree)
 
-    print ("The size of the decoded data is: {}\n".format(sys.getsizeof(decoded_data)))
-    print ("The content of the encoded data is: {}\n".format(decoded_data))
+    print("The size of the decoded data is: {}\n"
+          .format(sys.getsizeof(decoded_data)))
+    print("The content of the encoded data is: {}\n"
+          .format(decoded_data))

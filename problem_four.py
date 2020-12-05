@@ -19,6 +19,7 @@ class Group(object):
     def get_name(self):
         return self.name
 
+
 def is_user_in_group(user, group):
     """
     Return True if user is in the group, False otherwise.
@@ -28,6 +29,7 @@ def is_user_in_group(user, group):
       group(class:Group): group to check user membership against
     """
     return change_dir(user, group)
+
 
 def change_dir(user, group):
     users = group.get_users()
@@ -41,6 +43,7 @@ def change_dir(user, group):
                 return bool
         return False
 
+
 parent = Group("parent")
 child = Group("child")
 sub_child = Group("subchild")
@@ -51,8 +54,8 @@ sub_child.add_user(sub_child_user)
 child.add_group(sub_child)
 parent.add_group(child)
 
-print(is_user_in_group('sub_child_user', parent)) # True
-print(is_user_in_group('sub_child_user', child)) # True
-print(is_user_in_group('sub_child_user', sub_child)) # True
-print(is_user_in_group('sub_child_usr', parent)) # False
-print(is_user_in_group('sub_child_user', Group('random_group'))) # False
+print(is_user_in_group('sub_child_user', parent))  # True
+print(is_user_in_group('sub_child_user', child))  # True
+print(is_user_in_group('sub_child_user', sub_child))  # True
+print(is_user_in_group('sub_child_usr', parent))  # False
+print(is_user_in_group('sub_child_user', Group('random_group')))  # False
