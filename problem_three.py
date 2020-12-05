@@ -1,5 +1,4 @@
 import sys, collections
-from heapq import heapify, heappush, heappop
 
 class Node:
     def __init__(self, value, char = None, parent = None, left_sibling = None):
@@ -70,6 +69,7 @@ class Tree():
                 leaves.append(item)  
         return leaves
 
+
 def sort_list(list):
     return sorted(list, key = lambda x: x.value)
 
@@ -110,25 +110,34 @@ def huffman_encoding(data):
         priority_queue = priority_queue[2:]
         priority_queue = sort_list(priority_queue)
     tree = Tree(priority_queue[0])
-    node = tree.get_root()
     codes = dict()
- 
     leaves = tree.find_leaves()
     for leaf in leaves:
-        string = str(calculate_code(leaf, node, []))
-        codes[leaf.char] = string
+        codes[leaf.char] = str(calculate_code(leaf, tree.get_root(), []))
     final_string = ''
     for d in data:
         final_string += codes.get(d, '')
     return final_string, tree
 
-def huffman_decoding(data,tree):
-    pass
+def huffman_decoding(data, tree):
+    leaves = tree.find_leaves()
+    codes = dict()
+    for leaf in leaves:
+        codes[calculate_code(leaf, tree.get_root(), [])] = leaf.char 
+    cur_string = ''
+    solution = ''
+    for d in data:
+        cur_string += d
+        if (codes.get(cur_string, None)) is not None:
+            solution += codes.get(cur_string)
+            cur_string = ''
+            continue
+    return solution
 
 if __name__ == "__main__":
     codes = {}
 
-    a_great_sentence = "BCAADDDCCACACAC"
+    a_great_sentence = "The bird is the word"
 
     huffman_encoding(a_great_sentence)
     print ("The size of the data is: {}\n".format(sys.getsizeof(a_great_sentence)))
@@ -139,7 +148,7 @@ if __name__ == "__main__":
     print ("The size of the encoded data is: {}\n".format(sys.getsizeof(int(encoded_data, base=2))))
     print ("The content of the encoded data is: {}\n".format(encoded_data))
 
-    # decoded_data = huffman_decoding(encoded_data, tree)
+    decoded_data = huffman_decoding(encoded_data, tree)
 
-    # print ("The size of the decoded data is: {}\n".format(sys.getsizeof(decoded_data)))
-    # print ("The content of the encoded data is: {}\n".format(decoded_data))
+    print ("The size of the decoded data is: {}\n".format(sys.getsizeof(decoded_data)))
+    print ("The content of the encoded data is: {}\n".format(decoded_data))
